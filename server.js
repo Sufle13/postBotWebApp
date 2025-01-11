@@ -1,18 +1,14 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-require("dotenv").config();
+const port = process.env.PORT || 3000;
 
-const PORT = process.env.PORT || 3000;
+// Указываем директорию для статических файлов (например, HTML, JS, CSS)
+app.use(express.static('public'));
 
-// Указываем папку для статики
-app.use(express.static("public"));
-
-// Маршрут для проверки
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/public/index.html");
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
 });
 
-// Запуск сервера
-app.listen(PORT, () => {
-    console.log(`Сервер запущен на http://localhost:${PORT}`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

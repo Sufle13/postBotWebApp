@@ -1,5 +1,8 @@
 // Проверяем, что объект Telegram Web App доступен
-if (window.Telegram.WebApp) {
+if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
+    console.log("WebApp API доступен!");
+    console.log("Инициализационные данные:", window.Telegram.WebApp.initData);
+
     const tg = window.Telegram.WebApp;
 
     // Устанавливаем цвет кнопки закрытия Web App
@@ -31,4 +34,6 @@ if (window.Telegram.WebApp) {
         };
         tg.sendData(JSON.stringify(message)); // Отправляем данные боту
     });
+} else {
+    console.warn("WebApp API недоступен. Возможно, вы открываете приложение вне Telegram?");
 }
