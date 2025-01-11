@@ -7,25 +7,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
-    <h1>👋 Добро пожаловать!</h1>
-    <p id="user-info"></p>
-    <button id="send-data">Отправить данные</button>
-  </div>
-  <script>
-    // Telegram Web App API
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Расширяем Web App
-
-    // Устанавливаем данные пользователя
-    const userInfo = tg.initDataUnsafe?.user || {};
-    const userInfoDiv = document.getElementById('user-info');
-    userInfoDiv.innerHTML = `Привет, ${userInfo.first_name || 'гость'}!`;
-
-    // Обработка кнопки
-    document.getElementById('send-data').addEventListener('click', () => {
-      tg.sendData(JSON.stringify({ action: "button_clicked", user: userInfo }));
-    });
-  </script>
+    <h1>Добро пожаловать в Telegram Web App!</h1>
+    <button id="sendData">Отправить данные</button>
+    <script src="script.js"></script>
 </body>
 </html>
