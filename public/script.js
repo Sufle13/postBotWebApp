@@ -1,39 +1,60 @@
-// Проверяем, что объект Telegram Web App доступен
+// Проверяем доступность Telegram Web App API
 if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
     console.log("WebApp API доступен!");
-    console.log("Инициализационные данные:", window.Telegram.WebApp.initData);
-
+  
     const tg = window.Telegram.WebApp;
-
-    // Устанавливаем цвет кнопки закрытия Web App
     tg.setBackgroundColor("#F0F0F0");
     tg.setHeaderColor("#000000");
-
+  
     // Показываем основную кнопку
-    tg.MainButton.setText("Отправить данные");
+    tg.MainButton.setText("Закрыть");
     tg.MainButton.show();
-
-    // Добавляем обработчик клика для основной кнопки
-    tg.MainButton.onClick(() => {
-        const userData = {
-            user_id: tg.initDataUnsafe.user?.id,
-            first_name: tg.initDataUnsafe.user?.first_name,
-            last_name: tg.initDataUnsafe.user?.last_name,
-        };
-
-        // Отправляем данные обратно в Telegram
-        tg.sendData(JSON.stringify(userData)); // Данные отправляются боту
-    });
-
-    // Обработка нажатия кнопки "Отправить данные"
-    const sendDataButton = document.getElementById("sendData");
-    sendDataButton.addEventListener("click", () => {
-        const message = {
-            text: "Привет от Web App!",
-            time: new Date().toISOString(),
-        };
-        tg.sendData(JSON.stringify(message)); // Отправляем данные боту
-    });
-} else {
+    tg.MainButton.onClick(() => tg.close());
+  
+    // Элемент списка матчей
+    const matchesList = document.getElementById("matches-list");
+  
+    // Кнопка обновления
+    const refreshButton = document.getElementById("refresh-button");
+  
+    // Функция для загрузки данных матчей
+    async function loadMatches() {
+      try {
+        const response = await fetch("https://http://localhost:8080/api/matches/live");
+        if (!response.ok) throw new Error("Ошибка загрузки данных матчей");
+  
+        const matches = await response.json();
+  
+        // Очистка списка
+        matchesList.innerHTML = "";
+  
+        // Добавляем матчи в список
+        matches.forEach((match) => {
+          const listItem = document.createElement("li");
+          listItem.className = "match-item";
+  
+          listItem.innerHTML = `
+            <h2>${match.tournament}</h2>
+            <p><strong>Игрок 1:</strong> ${match.player1} (Счет: ${match.score1})</p>
+            <p><strong>Игрок 2:</strong> ${match.player2} (Счет: ${match.score2})</p>
+            <p><strong>Статус:</strong> ${match.status}</p>
+            <p><strong>Состояние игры:</strong> ${match.liveStatus}</p>
+          `;
+  
+          matchesList.appendChild(listItem);
+        });
+      } catch (error) {
+        console.error("Ошибка загрузки матчей:", error);
+        matchesList.innerHTML = "<li>Ошибка загрузки данных. Попробуйте снова позже.</li>";
+      }
+    }
+  
+    // Загружаем матчи при открытии
+    loadMatches();
+  
+    // Добавляем обработчик для кнопки обновления
+    refreshButton.addEventListener("click", loadMatches);
+  } else {
     console.warn("WebApp API недоступен. Возможно, вы открываете приложение вне Telegram?");
-}
+  }
+  
