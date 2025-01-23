@@ -20,7 +20,7 @@ if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
     // Функция для загрузки данных матчей
     async function loadMatches() {
       try {
-        const response = await fetch("http://localhost:8080/api/matches/live");
+        const response = await fetch("https://srintagration-production.up.railway.app/api/matches/live");
         if (!response.ok) throw new Error("Ошибка загрузки данных матчей");
   
         const matches = await response.json();
