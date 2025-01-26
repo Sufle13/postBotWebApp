@@ -12,12 +12,23 @@
     <h1>Live Tennis Matches</h1>
   </header>
   <main>
+    <div id="update-indicator" class="hidden">Данные обновлены</div>
+    <style>
+      .hidden {
+        display: none;
+      }
+      #update-indicator {
+        font-size: 14px;
+        color: #28a745;
+        margin-top: 10px;
+      }
+    </style>
+    <button id="refresh-button" class="refresh-button">Обновить матчи</button>
     <ul id="matches-list" class="matches-list">
       <!-- Список матчей будет добавляться здесь -->
     </ul>
   </main>
   <footer>
-    <button id="refresh-button" class="refresh-button">Обновить матчи</button>
   </footer>
   <script src="script.js"></script>
 </body>

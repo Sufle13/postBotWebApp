@@ -11,16 +11,47 @@ if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
     tg.MainButton.show();
     tg.MainButton.onClick(() => tg.close());
   
-    // Элемент списка матчей
-    const matchesList = document.getElementById("matches-list");
-  
     // Кнопка обновления
     const refreshButton = document.getElementById("refresh-button");
 
     // WebSocket URL
     const websocketUrl = "wss://srintagration-production.up.railway.app/ws/matches";
+    const websocket = new WebSocket(websocketUrl);
+
+    // Обработка открытия соединения
+    websocket.addEventListener("open", () => {
+        console.log("WebSocket соединение установлено");
+    });
+
+    // Обработка входящих сообщений
+    websocket.addEventListener("message", (event) => {
+        console.log("Получено сообщение через WebSocket:", event.data);
+        try {
+            const matches = JSON.parse(event.data);
+            console.log("Получены обновления матчей через WebSocket:", matches);
+
+            // Обновляем список матчей
+            updateMatches(matches);
+            showUpdateIndicator();
+        } catch (error) {
+            console.error("Ошибка обработки данных WebSocket:", error);
+        }
+    });
+
+    // Обработка ошибок соединения
+    websocket.addEventListener("error", (error) => {
+        console.error("Ошибка WebSocket соединения:", error);
+    });
+
+    // Обработка закрытия соединения
+    websocket.addEventListener("close", () => {
+        console.warn("WebSocket соединение закрыто");
+    });
+
 
     function updateMatches(matches) {
+        const matchesList = document.getElementById("matches_list");
+
         // Очистка списка
         matchesList.innerHTML = "";
 
@@ -40,39 +71,6 @@ if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
             matchesList.appendChild(listItem);
         });
     }
-
-    // Устанавливаем WebSocket-соединение
-    const websocket = new WebSocket(websocketUrl);
-
-    // Обработка открытия соединения
-    websocket.addEventListener("open", () => {
-        console.log("WebSocket соединение установлено");
-    });
-
-    // Обработка входящих сообщений
-    websocket.addEventListener("message", (event) => {
-        try {
-            const matches = JSON.parse(event.data);
-            console.log("Получены обновления матчей через WebSocket:", matches);
-
-            // Обновляем список матчей
-            updateMatches(matches);
-        } catch (error) {
-            console.error("Ошибка обработки данных WebSocket:", error);
-        }
-    });
-
-    // Обработка ошибок соединения
-    websocket.addEventListener("error", (error) => {
-        console.error("Ошибка WebSocket соединения:", error);
-    });
-
-    // Обработка закрытия соединения
-    websocket.addEventListener("close", () => {
-        console.warn("WebSocket соединение закрыто");
-    });
-
-
   
     // Функция для загрузки данных матчей
     async function loadMatches() {
@@ -93,6 +91,12 @@ if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
   
     // Загружаем матчи при открытии
     loadMatches();
+
+    function showUpdateIndicator() {
+        const indicator = document.getElementById("update-indicator");
+        indicator.classList.remove("hidden");
+        setTimeout(() => indicator.classList.add("hidden"), 3000);
+    }
   
     // Добавляем обработчик для кнопки обновления
     refreshButton.addEventListener("click", loadMatches);
