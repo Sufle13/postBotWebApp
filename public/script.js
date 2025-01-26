@@ -13,6 +13,7 @@ if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
   
     // Кнопка обновления
     const refreshButton = document.getElementById("refresh-button");
+    const matchesList = document.getElementById("matches_list");
 
     // WebSocket URL
     const websocketUrl = "wss://srintagration-production.up.railway.app/ws/matches";
@@ -50,8 +51,6 @@ if (typeof window.Telegram !== "undefined" && window.Telegram.WebApp) {
 
 
     function updateMatches(matches) {
-        const matchesList = document.getElementById("matches_list");
-
         // Очистка списка
         matchesList.innerHTML = "";
 

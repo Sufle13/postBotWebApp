@@ -61,4 +61,14 @@ body {
   .refresh-button:hover {
     background-color: #333333;
   }
+
+  .hidden {
+    display: none;
+  }
+  
+  #update-indicator {
+    font-size: 14px;
+    color: #28a745;
+    margin-top: 10px;
+  }
   
